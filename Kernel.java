@@ -447,8 +447,8 @@ public class Kernel extends Thread
         {
           System.out.println( "READ " + Long.toString( instruct.addr , addressradix ) + " ... okay" );
         }
-        bitMatrix.setPageReference(page.physical);
       }
+      bitMatrix.setPageReference(page.physical);
     }
     if ( instruct.inst.startsWith( "WRITE" ) ) 
     {
@@ -477,8 +477,8 @@ public class Kernel extends Thread
         {
           System.out.println( "WRITE " + Long.toString(instruct.addr , addressradix) + " ... okay" );
         }
-        bitMatrix.setPageReference(page.physical);
       }
+      bitMatrix.setPageReference(page.physical);
     }
     for ( i = 0; i <= virtPageNum; i++ ) 
     {

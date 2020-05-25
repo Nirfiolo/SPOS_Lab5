@@ -66,6 +66,5 @@ public class PageFault {
     page.physical = -1;
 
     bitMatrix.updatePhysical(nextpage.physical, nextpage.id);
-    bitMatrix.setPageReference(nextpage.physical);
   }
 }

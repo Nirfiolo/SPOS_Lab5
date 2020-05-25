@@ -2,19 +2,18 @@ import java.util.*;
 
 
 public class BitMatrix {
-    private boolean[][] matrix;
+    private long[] matrix;
     private int[] physicalToId;
     private int size;
+    private final int maxBitSize = 64;
 
     public BitMatrix(int size, Vector mem) {
         this.size = size;
-        matrix = new boolean[size][size];
+        matrix = new long[size];
         physicalToId = new int[size];
 
-        for (int i = 0; i < size; ++i) {
-            java.util.Arrays.fill(matrix[i], false);
-        }
-
+        java.util.Arrays.fill(matrix, 0);
+        
         for (int i = 0; i < mem.size(); ++i) {
             Page page = (Page) mem.elementAt(i);
             if (page.physical != -1) {
@@ -25,11 +24,11 @@ public class BitMatrix {
 
     public void setPageReference(int physical) {
         for (int j = 0; j < size; ++j) {
-            matrix[physical][j] = true;
+            matrix[physical] = Long.MAX_VALUE >> (maxBitSize - size - 1);
         }
 
         for (int i = 0; i < size; ++i) {
-            matrix[i][physical] = false;
+            matrix[i] &= ~(1 << physical);
         }
     }
 
@@ -39,29 +38,22 @@ public class BitMatrix {
 
     public int getLRU() {
         int lowestIndex = 0;
-        int lowestValue = size;
+        long lowestValue = Long.MAX_VALUE;
         
         for (int i = 0; i < size; ++i) {
-            int currentValue = 0;
-            for (int j = 0; j < size; ++j) {
-                currentValue += matrix[i][j] ? 1 : 0;
-            }
-
-            if (currentValue < lowestValue) {
+            if (matrix[i] < lowestValue) {
                 lowestIndex = i;
-                lowestValue = currentValue;
+                lowestValue = matrix[i];
             }
         }
 
         return physicalToId[lowestIndex];
     }
 
-
     public void outToConsole() {
         for (int i = 0; i < size; ++i) {
-            for (int j = 0; j < size; ++j) {
-                System.out.print((matrix[i][j] ? 1 : 0) + " ");
-            }
+            System.out.print("0".repeat(size - Long.toBinaryString(matrix[i]).length()) +
+                Long.toBinaryString(matrix[i]));
             System.out.println();
         }
         System.out.println();
